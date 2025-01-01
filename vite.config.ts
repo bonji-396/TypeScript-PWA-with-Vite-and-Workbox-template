@@ -4,6 +4,14 @@ import { VitePWA } from 'vite-plugin-pwa';
 export default defineConfig({
   plugins: [
     VitePWA({
+      strategies: 'injectManifest',
+      srcDir: 'src',
+      filename: 'service-worker.ts',
+      devOptions: {
+        enabled: true,
+        type: 'module'
+      },
+      injectRegister: 'auto',
       registerType: 'autoUpdate',
       manifest: {
         name: 'PWA App',
@@ -24,14 +32,7 @@ export default defineConfig({
             type: 'image/png'
           }
         ]
-      },
-      workbox: {
-        clientsClaim: true,
-        skipWaiting: true
       }
     })
-  ],
-  server: {
-    port: 3000
-  }
+  ]
 });

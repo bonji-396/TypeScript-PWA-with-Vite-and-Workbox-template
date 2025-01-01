@@ -1,5 +1,6 @@
 import { Observable, of, fromEvent, interval } from 'rxjs';
 import { map, filter, debounceTime, take } from 'rxjs/operators';
+import { registerSW } from 'virtual:pwa-register';
 import './styles/main.scss';
 
 // 基本的なメッセージストリーム
@@ -39,14 +40,18 @@ timer$.subscribe({
 // PWAのメイン処理
 console.log('PWA application started');
 
-// Service Workerの状態監視
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.ready.then((registration) => {
-    console.log('Service Worker is ready:', registration.scope);
-  });
-
-  // Service Workerのメッセージ監視
-  navigator.serviceWorker.addEventListener('message', (event) => {
-    console.log('Received message from Service Worker:', event.data);
-  });
-}
+// Service Workerの登録
+const updateSW = registerSW({
+  onNeedRefresh() {
+    console.log('New content is available; please refresh.');
+  },
+  onOfflineReady() {
+    console.log('Content is cached for offline use.');
+  },
+  onRegistered(registration) {
+    console.log('Service worker has been registered.', registration);
+  },
+  onRegisterError(error) {
+    console.error('Error during service worker registration:', error);
+  }
+});
